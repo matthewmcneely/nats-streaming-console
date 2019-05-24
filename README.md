@@ -2,6 +2,8 @@
 
 A web console for Nats Streaming Server.
 
+NOTE: this fork allows viewing of messages that might not be json, or text for that matter.
+
 ## Dashboard
 
 <img src="https://s3-us-west-2.amazonaws.com/co.kuali.docs/nsc-ss-home.png" width="512" height="384" />
