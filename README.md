@@ -2,7 +2,8 @@
 
 A web console for Nats Streaming Server.
 
-NOTE: this fork allows viewing of messages that might not be json, or text for that matter.
+NOTE: this fork allows viewing of messages that might not be json, or text for that matter. I was not able to 
+get the Docker build working. To run locally, follow the directions below.
 
 ## Dashboard
 
@@ -38,7 +39,7 @@ Coming soon
 ## Checkout and run the Codes!
 If you just want to build and run it. That is pretty easy too. You will need git and nodejs.
 ```sh
-git clone https://github.com/KualiCo/nats-streaming-console.git
+git clone https://github.com/matthewmcneely/nats-streaming-console.git
 cd nats-streaming-console
 npm install
 npm run build-css
