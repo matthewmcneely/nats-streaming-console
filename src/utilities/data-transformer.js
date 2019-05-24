@@ -1,29 +1,3 @@
-import { timeParse, ascending } from 'd3'
-
-const parseDate = timeParse('%m/%d/%Y')
-
-function flattenData(data) {
-  let flattenedData = []
-  let keys = []
-  data.forEach(function(dataArray) {
-    dataArray.forEach(function(row) {
-      if (keys.indexOf(row.name) < 0) {
-        keys.push(row.name)
-      }
-      let thisDate = row.date
-      row.date = parseDate(row.date)
-      let metricName = row.name
-      row[metricName] = +row.count
-      delete row.name
-      delete row.count
-    })
-    flattenedData = flattenedData.concat(dataArray)
-  })
-  return {
-    data: flattenedData,
-    keys: keys
-  }
-}
 
 function combineData(data) {
   let combinedData = []
@@ -50,13 +24,6 @@ function fillZeros(data, keys) {
   return data
 }
 
-function sortData(data) {
-  data.sort(function(x, y) {
-    return ascending(x.date, y.date)
-  })
-  return data
-}
-
 function roundDate(date) {
   if (date && date.setHours) {
     date.setHours(0)
@@ -77,4 +44,29 @@ function findValue(data, date, metric) {
   return myVal
 }
 
-export { flattenData, combineData, fillZeros, sortData, roundDate, findValue }
+function messageType(data) {
+  if (data[0] == '{') {
+    return 'json'
+  } else {
+    return 'text'
+  }
+}
+
+function messageData(data) {
+  if (messageType(data) == 'json') {
+    return JSON.stringify(JSON.parse(data), null, 2)
+  } else {
+    var str = "";
+    for (var i = 0; i < data.length; i++) {
+      var ch = data[i]
+      if (ch >= 32 && ch < 127) {
+        str += ch
+      } else {
+        str += "."
+      }
+    }
+    return data
+  }
+}
+
+export { combineData, fillZeros, roundDate, findValue, messageType, messageData }

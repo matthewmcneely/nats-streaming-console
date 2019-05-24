@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { getChannels, getClients, getMessages } from '../api/nats-streaming'
+import { messageType, messageData } from '../utilities/data-transformer'
 import { subscribeToChannel } from '../api/web-socket'
 import JSONTree from 'react-json-tree'
 import {
@@ -94,7 +95,7 @@ export default class ChannelView extends Component {
     const messages = []
     console.log({ name, opts, messages })
     subscribeToChannel(name, opts, msg => {
-      console.log({ msg })
+      //console.log({ msg })
       if (messages.length === 30) messages.pop()
       messages.unshift(msg)
       this.setState({ focusedChannelMessages: messages })
@@ -116,8 +117,6 @@ export default class ChannelView extends Component {
       height,
       width
     } = this.state
-
-    console.log('render Home.js')
 
     if (loading) {
       return (
@@ -147,10 +146,20 @@ export default class ChannelView extends Component {
             <List>{this.renderMessages()}</List>
           </div>
         )}
-        {detail && detailFormat === 'json'
-          ? this.renderJsonDialog()
-          : this.renderDatatableDialog()}
-      </section>
+        {detail && (
+          <div className="menu-wrapper" style={{minWidth: 600}}>
+            <Toolbar title="Message" themed />
+            <TextField
+                id="data-output"
+                block
+                rows={100}
+                value={detail}
+                paddedBlock
+              />
+        </div>
+      )}
+
+       </section>
     )
   }
 
@@ -242,9 +251,10 @@ export default class ChannelView extends Component {
             </span>
           }
           onClick={() => {
+            console.log({ data })
             this.setState({
-              detail: JSON.parse(data),
-              detailFormat: 'json'
+              detail: messageData(data),
+              detailFormat: messageType(data)
             })
           }}
         />
@@ -271,12 +281,10 @@ export default class ChannelView extends Component {
         actions={actions}
         dialogClassName="detail-dialog"
       >
-        <JSONTree
+        <TextField>
+          rows={4}
           data={detail}
-          theme="monokai"
-          invertTheme={false}
-          shouldExpandNode={(path, branch, level) => level <= 1}
-        />
+        </TextField>
       </DialogContainer>
     )
   }
